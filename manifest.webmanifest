@@ -1,0 +1,20 @@
+{
+  "name": "Химияи органикӣ — аз сифр",
+  "short_name": "Химияи органикӣ",
+  "description": "Омӯзиши химияи органикӣ бо забони тоҷикӣ.",
+  "lang": "tg",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f7f2",
+  "theme_color": "#155e52",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

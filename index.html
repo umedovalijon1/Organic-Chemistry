@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Химияи органикиро бо забони тоҷикӣ омӯз: аз сохти атом ва формулаҳо то хосиятҳо ва истифодаи моддаҳо.">
+<meta name="theme-color" content="#155e52">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Химияи органикӣ">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="./icon.svg">
 <title>Химияи органикӣ — аз сифр</title>
 <style>
 :root {
@@ -101,6 +108,14 @@ tr:last-child td { border-bottom:0; }
 .modal-structure { font-family:ui-monospace,Consolas,monospace; white-space:pre-wrap; text-align:center; line-height:1.9; background:light-dark(#f1f7f3,#14221e); padding:18px; border-radius:14px; border:1px dashed light-dark(#b7ccc0,#49675a); }
 .modal-columns { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
 .modal-note { background:light-dark(#f5f8f5,#23332e); padding:13px 15px; border-radius:12px; line-height:1.65; }
+.primary-nav { display:flex; align-items:center; gap:4px; }
+.primary-nav a { display:flex; align-items:center; min-height:44px; padding:8px 12px; border-radius:10px; color:inherit; text-decoration:none; font-weight:650; }
+.primary-nav a:hover,.primary-nav a:focus-visible { background:#ffffff20; }
+.menu-toggle { display:none; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:8px 12px; border:1px solid #ffffff70; border-radius:11px; background:#ffffff14; color:inherit; font:inherit; font-weight:700; cursor:pointer; }
+.menu-icon { display:grid; gap:4px; }
+.menu-icon span { display:block; width:17px; height:2px; border-radius:2px; background:currentColor; }
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible { outline:3px solid #e8bb67; outline-offset:2px; }
+section[id] { scroll-margin-top:84px; }
 /* Телефон ва планшет */
 html { scroll-behavior:smooth; }
 button,select,input { touch-action:manipulation; }
@@ -136,12 +151,48 @@ button,select,input { touch-action:manipulation; }
 }
 @media(max-width:850px){.cards{grid-template-columns:1fr 1fr}.study-layout{grid-template-columns:1fr}.part2-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.cards{grid-template-columns:1fr}.part2-grid{grid-template-columns:1fr 1fr}.section-head{align-items:start;flex-direction:column}.detail-grid,.modal-columns{grid-template-columns:1fr}.modal-grid{grid-template-columns:1fr 1fr}.topbar{padding:12px 16px}.brand{font-size:14px}}
+@media(max-width:700px){
+  .topbar{position:sticky;top:0;z-index:15;flex-wrap:wrap;gap:8px;padding:max(10px,env(safe-area-inset-top)) 14px 10px}
+  .brand{flex:1 1 0;min-width:0}
+  .brand-mark{flex:0 0 auto}
+  .brand span{min-width:0;max-width:180px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .menu-toggle{display:flex;flex:0 0 auto}
+  .lang{display:none}
+  .primary-nav{display:none;flex:1 0 100%;flex-direction:column;align-items:stretch;gap:2px;padding-top:6px;border-top:1px solid #ffffff45}
+  .primary-nav.open{display:flex}
+  .primary-nav a{padding:8px 10px}
+  .hero{padding-top:32px}
+  .hero-actions .btn{min-height:46px}
+  .tab,.functional-tab{min-height:44px}
+  .open-detail{min-height:44px;padding:8px 0}
+  .close-modal{min-height:44px}
+  .table-wrap{-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+  .footer{padding-bottom:max(24px,env(safe-area-inset-bottom))}
+}
+@media(max-width:380px){
+  .topbar{padding-right:10px;padding-left:10px;gap:6px}
+  .brand{gap:6px;font-size:12px}
+  .brand-mark{width:30px;height:30px}
+  .brand span{max-width:110px;font-size:11px}
+  .lang{padding:7px 8px}
+  .menu-toggle{gap:6px;padding:7px 9px;font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
+}
 </style>
 </head>
 <body>
 <div id="app">
   <header class="topbar">
     <div class="brand"><div class="brand-mark">C</div><span>ХИМИЯИ ОРГАНИКӢ · АЗ СИФР</span></div>
+    <button class="menu-toggle" id="menuToggle" type="button" aria-controls="primaryNavigation" aria-expanded="false" aria-label="Кушодани меню"><span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span><span class="menu-label">Меню</span></button>
+    <nav class="primary-nav" id="primaryNavigation" aria-label="Навигацияи асосӣ">
+      <a href="#intro">Муқаддима</a>
+      <a href="#part1">Қисми якум</a>
+      <a href="#part2">Қисми дуюм</a>
+    </nav>
     <select class="lang" aria-label="Забон" disabled title="Забонҳои дигар дар марҳилаи баъдӣ илова мешаванд"><option>Тоҷикӣ ✓</option><option>Русский — баъдтар</option><option>English — баъдтар</option></select>
   </header>
   <section class="hero">
@@ -296,6 +347,13 @@ document.getElementById('homologs').addEventListener('keydown',e=>{if((e.key==='
 document.getElementById('functionalRows').addEventListener('click',e=>{const row=e.target.closest('tr');if(row)openFunctionalDetail(document.getElementById('functionalRows').dataset.group,Number(row.dataset.index));});
 document.getElementById('functionalRows').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('tr')){e.preventDefault();openFunctionalDetail(document.getElementById('functionalRows').dataset.group,Number(e.target.dataset.index));}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAlkane();});
+const menuToggle=document.getElementById('menuToggle');
+const primaryNavigation=document.getElementById('primaryNavigation');
+function setNavigationOpen(isOpen){menuToggle.setAttribute('aria-expanded',String(isOpen));menuToggle.setAttribute('aria-label',isOpen?'Пӯшидани меню':'Кушодани меню');menuToggle.querySelector('.menu-label').textContent=isOpen?'Пӯшидан':'Меню';primaryNavigation.classList.toggle('open',isOpen);}
+menuToggle.addEventListener('click',()=>setNavigationOpen(menuToggle.getAttribute('aria-expanded')!=='true'));
+primaryNavigation.addEventListener('click',e=>{if(e.target.closest('a'))setNavigationOpen(false);});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')setNavigationOpen(false);});
+window.addEventListener('resize',()=>{if(window.innerWidth>700)setNavigationOpen(false);},{passive:true});
 </script>
 </body>
 </html>
