@@ -115,15 +115,15 @@ td { font-size:14px; }
 .isomer-entry:last-child { padding-bottom:0; border-bottom:0; }
 .isomer-structure { direction:ltr; unicode-bidi:isolate; font-family:Georgia,serif; font-size:13px; font-weight:600; overflow-wrap:anywhere; }
 .isomer-name { margin-top:5px; color:var(--text-secondary); font-weight:700; }
-.methylene-1 { color:#00695c; border-bottom:2px solid currentColor; }
-.methylene-2 { color:#8a3ffc; border-bottom:2px dashed currentColor; }
-.methylene-3 { color:#a33b00; border-bottom:2px dotted currentColor; }
-.methylene-4 { color:#0758a6; border-bottom:3px double currentColor; }
+.isomer-entry.isomer-color-1 { color:#00695c; border-left:3px solid currentColor; padding-left:8px; }
+.isomer-entry.isomer-color-2 { color:#7131b8; border-left:3px dashed currentColor; padding-left:8px; }
+.isomer-entry.isomer-color-3 { color:#963600; border-left:3px dotted currentColor; padding-left:8px; }
+.isomer-entry.isomer-color-4 { color:#0758a6; border-left:4px double currentColor; padding-left:8px; }
 @media(prefers-color-scheme:dark){
- .methylene-1 { color:#72dbc2; }
- .methylene-2 { color:#c6a0ff; }
- .methylene-3 { color:#ffad7a; }
- .methylene-4 { color:#88beff; }
+ .isomer-entry.isomer-color-1 { color:#72dbc2; }
+ .isomer-entry.isomer-color-2 { color:#c6a0ff; }
+ .isomer-entry.isomer-color-3 { color:#ffad7a; }
+ .isomer-entry.isomer-color-4 { color:#88beff; }
 }
 tr:last-child td { border-bottom:0; }
 .formula { font-family:Georgia,serif; font-size:17px; font-weight:700; color:var(--text-formula); white-space:nowrap; }
@@ -422,8 +422,7 @@ data.diene.note+=' Ҷадвал 20 узви қаторро аз бута-1,3-д�
 data.alkyne.rows=alkyneRows();
 data.alkyne.note+=' Ҷадвал 20 узви қаторро аз этин то генэйкоз-1-ин (C₂₁H₄₀) дар бар мегирад. Сутуни изомерҳо намунаҳои изомерҳои ҷойӣ ва занҷириро меорад, на рӯйхати пурраи ҳамаи изомерҳо.';
 function showGroup(key,button){const d=data[key];document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));if(button)button.classList.add('active');document.getElementById('groupTitle').textContent=d.title;document.getElementById('groupType').textContent=d.type;document.getElementById('groupDesc').textContent=d.desc;document.getElementById('groupTheory').textContent=theories[key];document.getElementById('general').textContent=d.formula;document.getElementById('bond').textContent=d.bond;document.getElementById('fragment').textContent=d.fragment;document.getElementById('chain').textContent=d.chain;document.getElementById('homologs').dataset.group=key;document.getElementById('alkaneHint').textContent=key==='alkane'?'Барои кушодани маълумоти пурра номи ҳар як алканро дар ҷадвал зер кун.':'Барои кушодани маълумоти муфассал номи ҳар як намояндаро дар ҷадвал зер кун.';document.getElementById('homologs').innerHTML=d.rows.map((r,i)=>`<tr tabindex="0" role="button" aria-label="Маълумот дар бораи ${r[0]}" data-index="${i}"><td><button class="open-detail" type="button">${r[0]} ↗</button></td><td class="formula">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td><div class="isomer-list">${(r[4]||'—').split('; ').map(example=>`<div>${example}</div>`).join('')}</div></td></tr>`).join('');document.getElementById('groupNote').textContent=d.note;document.getElementById('structure').textContent=d.structure;document.getElementById('rules').innerHTML=d.rules.map(x=>`<li>${x}</li>`).join('');document.getElementById('isomerText').textContent=d.isomer;document.getElementById('isomerBox').textContent=representativeIsomers[key]||d.isobox;}
-function colorizeMethylene(structure){let index=0;return structure.replace(/CH₂/g,group=>{index+=1;const color=(index-1)%4+1;return `<span class="methylene-${color}" aria-label="Гурӯҳи метиленӣ ${index}" title="Гурӯҳи метиленӣ ${index}">${group}</span>`;});}
-function formatIsomerEntries(value){return value.split('; ').map(example=>{const separator=example.indexOf(': ');if(separator<0)return `<div class="isomer-entry"><div class="isomer-structure">${colorizeMethylene(example)}</div></div>`;const name=example.slice(0,separator),structure=example.slice(separator+2);return `<div class="isomer-entry"><div class="isomer-structure">${colorizeMethylene(structure)}</div><div class="isomer-name">${name}</div></div>`;}).join('');}
+function formatIsomerEntries(value){return value.split('; ').map((example,index)=>{const separator=example.indexOf(': '),color=`isomer-color-${index%4+1}`;if(separator<0)return `<div class="isomer-entry ${color}"><div class="isomer-structure">${example}</div></div>`;const name=example.slice(0,separator),structure=example.slice(separator+2);return `<div class="isomer-entry ${color}"><div class="isomer-structure">${structure}</div><div class="isomer-name">${name}</div></div>`;}).join('');}
 const renderGroupTable=showGroup;
 showGroup=function(key,button){renderGroupTable(key,button);document.querySelectorAll('#homologs .isomer-list').forEach((list,index)=>{list.innerHTML=formatIsomerEntries(data[key].rows[index][4]||'—');});};
 const theories={
