@@ -110,8 +110,11 @@ table { width:100%; border-collapse:collapse; min-width:520px; }
 th,td { text-align:left; padding:12px 10px; border-bottom:1px solid var(--border-table); vertical-align:top; }
 th { color:var(--text-secondary); font-size:13px; }
 td { font-size:14px; }
-.isomer-list { display:grid; gap:8px; min-width:260px; line-height:1.55; }
-.isomer-list > div + div { border-top:1px solid var(--border-soft); padding-top:8px; }
+.isomer-list { display:grid; gap:12px; min-width:280px; line-height:1.55; }
+.isomer-entry { padding:0 0 10px; border-bottom:1px solid var(--border-soft); }
+.isomer-entry:last-child { padding-bottom:0; border-bottom:0; }
+.isomer-structure { direction:ltr; unicode-bidi:isolate; font-family:Georgia,serif; font-size:13px; font-weight:600; overflow-wrap:anywhere; }
+.isomer-name { margin-top:5px; color:var(--text-secondary); font-weight:700; }
 tr:last-child td { border-bottom:0; }
 .formula { font-family:Georgia,serif; font-size:17px; font-weight:700; color:var(--text-formula); white-space:nowrap; }
 .note { padding:14px 16px; border-left:4px solid #a5680c; background:var(--surface-note); border-radius:10px; color:var(--text-note); line-height:1.75; font-size:15px; margin-top:14px; }
@@ -293,7 +296,7 @@ button,select,input { touch-action:manipulation; }
           </div>
           <h3>Ҷадвали қатори гомологӣ</h3>
           <div class="alkane-hint" id="alkaneHint">Барои кушодани маълумоти пурра номи ҳар як алканро дар ҷадвал зер кун.</div>
-          <div class="table-wrap"><table><thead><tr><th>Ном — барои тафсилот зер кун</th><th>Формула</th><th>Сохтори кӯтоҳ</th><th>Шумораи –CH₂–</th><th>Намунаи изомерҳо (интихобӣ)</th></tr></thead><tbody id="homologs"></tbody></table></div>
+          <div class="table-wrap"><table><thead><tr><th>Ном — барои тафсилот зер кун</th><th>Формула</th><th>Сохтори кӯтоҳ</th><th>Шумораи –CH₂–</th><th>Сохтори изомерҳо ва ном</th></tr></thead><tbody id="homologs"></tbody></table></div>
           <div class="note" id="groupNote">Ҳар узви навбатии қатори гомологӣ аз узви пешина бо як гурӯҳи –CH₂– фарқ мекунад.</div>
         </section>
         <aside class="panel">
@@ -409,6 +412,9 @@ data.diene.note+=' Ҷадвал 20 узви қаторро аз бута-1,3-д�
 data.alkyne.rows=alkyneRows();
 data.alkyne.note+=' Ҷадвал 20 узви қаторро аз этин то генэйкоз-1-ин (C₂₁H₄₀) дар бар мегирад. Сутуни изомерҳо намунаҳои изомерҳои ҷойӣ ва занҷириро меорад, на рӯйхати пурраи ҳамаи изомерҳо.';
 function showGroup(key,button){const d=data[key];document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));if(button)button.classList.add('active');document.getElementById('groupTitle').textContent=d.title;document.getElementById('groupType').textContent=d.type;document.getElementById('groupDesc').textContent=d.desc;document.getElementById('groupTheory').textContent=theories[key];document.getElementById('general').textContent=d.formula;document.getElementById('bond').textContent=d.bond;document.getElementById('fragment').textContent=d.fragment;document.getElementById('chain').textContent=d.chain;document.getElementById('homologs').dataset.group=key;document.getElementById('alkaneHint').textContent=key==='alkane'?'Барои кушодани маълумоти пурра номи ҳар як алканро дар ҷадвал зер кун.':'Барои кушодани маълумоти муфассал номи ҳар як намояндаро дар ҷадвал зер кун.';document.getElementById('homologs').innerHTML=d.rows.map((r,i)=>`<tr tabindex="0" role="button" aria-label="Маълумот дар бораи ${r[0]}" data-index="${i}"><td><button class="open-detail" type="button">${r[0]} ↗</button></td><td class="formula">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td><div class="isomer-list">${(r[4]||'—').split('; ').map(example=>`<div>${example}</div>`).join('')}</div></td></tr>`).join('');document.getElementById('groupNote').textContent=d.note;document.getElementById('structure').textContent=d.structure;document.getElementById('rules').innerHTML=d.rules.map(x=>`<li>${x}</li>`).join('');document.getElementById('isomerText').textContent=d.isomer;document.getElementById('isomerBox').textContent=representativeIsomers[key]||d.isobox;}
+function formatIsomerEntries(value){return value.split('; ').map(example=>{const separator=example.indexOf(': ');if(separator<0)return `<div class="isomer-entry"><div class="isomer-structure">${example}</div></div>`;const name=example.slice(0,separator),structure=example.slice(separator+2);return `<div class="isomer-entry"><div class="isomer-structure">${structure}</div><div class="isomer-name">${name}</div></div>`;}).join('');}
+const renderGroupTable=showGroup;
+showGroup=function(key,button){renderGroupTable(key,button);document.querySelectorAll('#homologs .isomer-list').forEach((list,index)=>{list.innerHTML=formatIsomerEntries(data[key].rows[index][4]||'—');});};
 const theories={
 alkane:'А. Кекуле (1858) чорвалентии карбон ва қобилияти пайваст шудани атомҳои карбон ба занҷирҳоро шарҳ дод. Назарияи сохти химиявии А. М. Бутлеров (1861) нишон дод, ки хосият на танҳо аз таркиб, балки аз тартиби пайвастшавии атомҳо низ вобаста аст. Ин ду ғоя сохти занҷирҳои росту шохадор ва изомерияи алканҳоро мефаҳмонанд; онҳо назарияҳои умумии химияи органикӣ мебошанд, на назарияҳои махсуси танҳо барои алканҳо.',
 alkyl:'Дар назарияи радикалҳои асри XIX Берселиус, Либих ва Вёлер гурӯҳҳои атомҳоро ҳамчун воҳидҳои нисбатан устувори иштироккунандаи реаксияҳо меомӯхтанд; кори Либиху Вёлер дар бораи радикали бензоил (1832) намунаи муҳим буд. Назарияи сохти химиявии Бутлеров баъдан тартиби пайвастшавии ин гурӯҳҳоро дар молекулаҳо равшан кард. Дар химияи имрӯза алкил гурӯҳи ҷойивазкунандаи яквалентаест, ки аз алкан бо дур кардани H ҳосил мешавад; онро бо радикали озод, ки электрони ҷуфтнашуда дорад, омехта набояд кард.',
