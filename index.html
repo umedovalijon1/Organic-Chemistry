@@ -212,8 +212,37 @@ section[id] { scroll-margin-top:84px; }
 .quiz-log-dot{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800}
 .quiz-log-dot.ok{background:#e8f7ee;color:#14532d;border:1px solid #1d8a4a}
 .quiz-log-dot.no{background:#fdeeee;color:#7f1d1d;border:1px solid #c23b3b}
-.react-course{display:block;margin:6px 0 8px;line-height:1.7}
-.react-eq{display:block;direction:ltr;unicode-bidi:isolate;font-family:ui-monospace,Consolas,monospace;font-size:14px;line-height:1.7;margin:2px 0;overflow-wrap:anywhere}
+.react-block{margin-top:10px;padding:12px 14px;border:1px solid var(--border-soft);border-left:4px solid var(--react-accent);border-radius:12px;background:var(--surface-soft)}
+.react-block:first-child{margin-top:0}
+.react-title{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:800;color:var(--react-accent)}
+.react-num{flex:0 0 auto;display:grid;place-items:center;min-width:22px;height:22px;padding:0 5px;border-radius:7px;background:var(--react-accent);color:#fff;font-size:12px;font-weight:800}
+.react-intro,.react-course{display:block;margin-top:8px;font-size:13px;line-height:1.65;color:var(--text-secondary)}
+.react-steps{display:grid;gap:6px;margin-top:8px}
+.react-step{display:flex;align-items:flex-start;gap:9px;font-size:13px;line-height:1.6;color:var(--text-secondary)}
+.react-step-num{flex:0 0 auto;display:grid;place-items:center;min-width:20px;height:20px;margin-top:1px;border-radius:50%;border:1.5px solid var(--react-accent);color:var(--react-accent);background:var(--surface-card);font-size:11px;font-weight:800}
+.react-step-text{min-width:0}
+.react-eqs{display:grid;gap:6px;margin-top:10px}
+.react-eq{display:block;direction:ltr;unicode-bidi:isolate;font-family:ui-monospace,Consolas,monospace;font-size:13px;line-height:1.6;padding:7px 10px;border-radius:9px;background:var(--surface-code);border:1px solid var(--border-soft);border-left:3px solid var(--react-accent);overflow-wrap:anywhere}
+.react-color-1{--react-accent:#0e7490}
+.react-color-2{--react-accent:#7c3aed}
+.react-color-3{--react-accent:#c2410c}
+.react-color-4{--react-accent:#0f766e}
+.react-color-5{--react-accent:#be185d}
+.react-color-6{--react-accent:#4d7c0f}
+@media(prefers-color-scheme:dark){
+ .react-color-1{--react-accent:#22d3ee}
+ .react-color-2{--react-accent:#a78bfa}
+ .react-color-3{--react-accent:#fb923c}
+ .react-color-4{--react-accent:#2dd4bf}
+ .react-color-5{--react-accent:#f472b6}
+ .react-color-6{--react-accent:#a3e635}
+ .react-num{color:#101a18}
+}
+@media(max-width:700px){
+ .react-title{font-size:14px}
+ .react-intro,.react-course,.react-step{font-size:12.5px}
+ .react-eq{font-size:12px;padding:6px 8px}
+}
 @media(prefers-color-scheme:dark){
  .quiz-option.correct{background:#12301f;border-color:#2e7d4f}
  .quiz-option.wrong{background:#331c1c;border-color:#8a3a3a}
@@ -571,7 +600,20 @@ const alkaneIso=[1,1,1,2,3,5,9,18,35,75,159,355,802,1858,4347,10359,24894,60523,
 const alkaneBp=[-161.5,-88.6,-42.1,-0.5,36.1,68.7,98.4,125.6,150.8,174.1,195.9,216.2,234.5,253.6,270.6,287.0,302,316,330,343];
 const alkaneMp=[-182.5,-183.3,-187.7,-138.3,-129.7,-95.0,-90.6,-56.8,-53.5,-29.7,-25.5,-9.6,-5.5,5.9,10.0,18.2,22.0,28.2,32.1,36.8];
 /* ===== Реаксияҳо: тарзи гузариш ва намунаҳо ===== */
-function renderReactions(reactions){return reactions.map(r=>`<div class="modal-note"><b>${r.name}</b><span class="react-course">${r.course}</span>${r.examples.map(e=>`<span class="react-eq">${e}</span>`).join('')}</div>`).join('');}
+function renderReactions(reactions){
+ return reactions.map((r,ri)=>{
+  const cls=`react-color-${(ri%6)+1}`;
+  const name=r.name.replace(/^\d+\.\s*/,'');
+  const parts=r.course.split(/\((\d)\)/);
+  let body='';
+  if(parts.length>=5){
+   const steps=[];
+   for(let s=1;s+1<parts.length;s+=2)steps.push({n:parts[s],text:parts[s+1].replace(/;\s*$/,'').trim()});
+   body=`${parts[0].trim()?`<span class="react-intro">${parts[0].trim()}</span>`:''}<div class="react-steps">${steps.map(st=>`<div class="react-step"><span class="react-step-num">${st.n}</span><span class="react-step-text">${st.text}</span></div>`).join('')}</div>`;
+  }else body=`<span class="react-course">${r.course}</span>`;
+  return `<div class="react-block ${cls}"><div class="react-title"><span class="react-num">${ri+1}</span>${name}</div>${body}<div class="react-eqs">${r.examples.map(e=>`<span class="react-eq">${e}</span>`).join('')}</div></div>`;
+ }).join('');
+}
 function uniqEx(list){return list.filter(x=>x).filter((x,i,a)=>a.indexOf(x)===i).slice(0,3);}
 function alkaneStruct(n){return n===1?'CH₄':`CH₃–${ch2(n-2)}CH₃`;}
 function alkeneStruct(n){return n===2?'CH₂=CH₂':`CH₂=CH–${ch2(n-3)}CH₃`;}
